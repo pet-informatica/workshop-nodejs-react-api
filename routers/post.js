@@ -6,16 +6,7 @@ const Comment = require('../models/comment')
 // posts
 
 router.get('/', (req, res) => {
-    let query = {}
-    if (req.query.tags) {
-        let tags = req.query.tags
-        if (!Array.isArray(tags))
-            tags = [tags]
-        query.tags = {
-            $all: tags
-        }
-    }
-    Post.find(query)
+    Post.find()
         .then(posts => res.status(200).json(posts))
         .catch(err => res.status(500).json({message: err.message}))
 })
@@ -46,8 +37,6 @@ router.put('/:postId', (req, res) => {
                 post.title = req.body.title
             if (req.body.text)
                 post.text = req.body.text
-            if (Array.isArray(req.body.tags))
-                post.tags = req.body.tags
             post.save()
                 .then(() => res.status(200).json(post))
                 .catch(err => res.status(500).json({message: err.message}))
@@ -82,8 +71,9 @@ router.post('/:postId/comments/', (req, res) => {
         .catch(err => res.status(500).json({message: err.message}))
 })
 
-router.delete('/:postId/comments/commentId', (req, res) => {
-    Post.findByIdAndRemove(req.params.id)
+router.delete('/:postId/comments/:commentId', (req, res) => {
+    Post.findByIdAndUpdate(req.params.postId, {$pull: {comments: req.params.commentId}})
+        .then(() => Comment.findByIdAndRemove(req.params.commentId))
         .then(() => res.end())
         .catch(err => res.status(500).json({message: err.message}))
 })

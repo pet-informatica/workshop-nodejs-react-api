@@ -13,8 +13,7 @@ const postSchema = mongoose.Schema({
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
-    }],
-    tags: [String]
+    }]
 })
 
 module.exports = mongoose.model('Post', postSchema)
