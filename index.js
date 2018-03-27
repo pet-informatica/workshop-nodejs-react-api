@@ -15,6 +15,6 @@ app.use(cors())
 
 app.use(bodyParser.json())
 
-app.use('/api/posts', PostRouter)
+app.use('/posts', PostRouter)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
